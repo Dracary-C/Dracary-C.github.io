@@ -1,1 +1,528 @@
-<p>Hello World</p>
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TPGDiff Style Project Page</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --text: #0f2244;
+      --accent: #1d66ff;
+      --accent-2: #ff5ca8;
+      --muted: #6d7a95;
+      --radius: 16px;
+      --shadow: 0 10px 30px rgba(15, 34, 68, 0.12);
+      --max: 1120px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: linear-gradient(180deg, #f7f9ff 0%, #f3f6fd 55%, #f7f9ff 100%);
+      color: var(--text);
+      line-height: 1.65;
+    }
+
+    .container {
+      width: min(100% - 32px, var(--max));
+      margin-inline: auto;
+    }
+
+    .hero {
+      padding: 56px 0 30px;
+      text-align: center;
+    }
+
+    .title {
+      font-size: clamp(2rem, 5vw, 4rem);
+      line-height: 1.05;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+      margin-bottom: 22px;
+    }
+
+    .authors {
+      display: flex;
+      gap: 10px 18px;
+      justify-content: center;
+      flex-wrap: wrap;
+      font-size: clamp(1.05rem, 1.6vw, 1.55rem);
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .authors a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .inst {
+      font-size: clamp(1rem, 1.3vw, 1.95rem);
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .corresponding {
+      color: #9fb4df;
+      font-style: italic;
+      font-weight: 700;
+      margin-top: 16px;
+      margin-bottom: 22px;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .action-btn {
+      border: 1px solid transparent;
+      border-radius: 12px;
+      background: #0f2244;
+      color: #fff;
+      padding: 10px 18px;
+      font-size: 1rem;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform .18s ease, background .18s ease, border-color .18s ease;
+    }
+
+    .action-btn:hover {
+      transform: translateY(-2px);
+      border-color: #9db8ff;
+      background: #153370;
+    }
+
+    section {
+      padding: 56px 0 6px;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: clamp(1.6rem, 3vw, 3rem);
+      font-weight: 800;
+    }
+
+    .title-bar {
+      width: 88px;
+      height: 6px;
+      border-radius: 999px;
+      margin: 12px auto 24px;
+      background: linear-gradient(90deg, #ff8ac1 0%, #ff5ca8 100%);
+    }
+
+    .caption {
+      text-align: center;
+      max-width: 760px;
+      margin: 0 auto 20px;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .tab {
+      border: 1px solid #cad8f8;
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: .95rem;
+      font-weight: 700;
+      background: #fff;
+      color: #244479;
+      cursor: pointer;
+      transition: all .18s ease;
+    }
+
+    .tab:hover {
+      border-color: #6f95f6;
+      color: #1d66ff;
+    }
+
+    .tab.active {
+      background: linear-gradient(120deg, #1d66ff, #5f86ff);
+      color: #fff;
+      border-color: transparent;
+      box-shadow: 0 8px 20px rgba(40, 96, 220, 0.26);
+    }
+
+    .comparison-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      border: 1px solid #e2e9fb;
+    }
+
+    .comparison {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    .comparison img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      pointer-events: none;
+    }
+
+    .before-wrap {
+      position: absolute;
+      inset: 0;
+      width: 50%;
+      overflow: hidden;
+    }
+
+    .divider {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 2px;
+      background: rgba(255, 255, 255, .95);
+      box-shadow: 0 0 0 1px rgba(15, 34, 68, .12);
+      transform: translateX(-1px);
+    }
+
+    .knob {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      background: rgba(19, 43, 83, .82);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-size: 1.1rem;
+      font-weight: 800;
+      box-shadow: 0 8px 18px rgba(8, 20, 40, .28);
+    }
+
+    .image-tag {
+      position: absolute;
+      top: 12px;
+      z-index: 4;
+      background: rgba(15, 34, 68, .82);
+      color: #fff;
+      font-size: .82rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 8px;
+      letter-spacing: .03em;
+    }
+
+    .tag-left {
+      left: 12px;
+    }
+
+    .tag-right {
+      right: 12px;
+    }
+
+    .slider {
+      width: calc(100% - 28px);
+      margin: 10px 14px 16px;
+      accent-color: #1d66ff;
+      cursor: pointer;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid #e2e9fb;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+
+    .card h3 {
+      font-size: 1.3rem;
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      color: #324d78;
+    }
+
+    .method-figure {
+      margin-top: 18px;
+      width: 100%;
+      border-radius: 14px;
+      border: 1px solid #d6e2ff;
+      overflow: hidden;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .7);
+    }
+
+    .method-figure img {
+      width: 100%;
+      display: block;
+    }
+
+    .table-wrap {
+      margin-top: 8px;
+      overflow-x: auto;
+      border-radius: 14px;
+      border: 1px solid #dde6fb;
+      background: #fff;
+      box-shadow: var(--shadow);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+    }
+
+    th, td {
+      padding: 12px 14px;
+      text-align: center;
+      border-bottom: 1px solid #edf2ff;
+    }
+
+    th {
+      background: #f3f7ff;
+      font-size: .95rem;
+      color: #2f4978;
+      font-weight: 800;
+    }
+
+    td:first-child, th:first-child {
+      text-align: left;
+      font-weight: 700;
+      color: #17335f;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .highlight {
+      color: #d63962;
+      font-weight: 800;
+    }
+
+    .runnerup {
+      color: #3659d8;
+      font-weight: 700;
+    }
+
+    footer {
+      padding: 44px 0 56px;
+      text-align: center;
+      color: #6f7f9d;
+      font-weight: 600;
+    }
+
+    @media (max-width: 900px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+      .hero {
+        padding-top: 38px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero container">
+    <h1 class="title">TPGDiff: Hierarchical Triple-Prior<br/>Guided Diffusion for Image Restoration</h1>
+    <div class="authors">
+      <a href="#">Yanjie Tu<sup>1</sup></a>
+      <a href="#">Qingsen Yan<sup>1,2*</sup></a>
+      <a href="#">Axi Niu<sup>1</sup></a>
+      <a href="#">Jiacong Tang<sup>1</sup></a>
+    </div>
+    <p class="inst"><sup>1</sup>Northwestern Polytechnical University</p>
+    <p class="inst"><sup>2</sup>Shenzhen Research Institute of Northwestern Polytechnical University</p>
+    <p class="corresponding">*Corresponding Author</p>
+    <div class="actions">
+      <a class="action-btn" href="https://arxiv.org" target="_blank" rel="noreferrer">📄 Paper</a>
+      <a class="action-btn" href="https://github.com" target="_blank" rel="noreferrer">💻 Code</a>
+      <a class="action-btn" href="https://arxiv.org" target="_blank" rel="noreferrer">✦ arXiv</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="container">
+      <h2 class="section-title">Interactive Comparisons</h2>
+      <div class="title-bar"></div>
+      <p class="caption">点击下方任务类型切换示例，并拖动滑块比较 LQ 输入与 Restoration 结果。</p>
+      <div class="tabs" id="tabs"></div>
+      <div class="comparison-card">
+        <div class="comparison" id="comparison">
+          <span class="image-tag tag-left">LQ</span>
+          <span class="image-tag tag-right">Ours</span>
+          <img id="afterImage" alt="restoration result" />
+          <div class="before-wrap" id="beforeWrap">
+            <img id="beforeImage" alt="low quality input" />
+          </div>
+          <div class="divider" id="divider"></div>
+          <div class="knob" id="knob">↔</div>
+        </div>
+        <input class="slider" id="slider" type="range" min="0" max="100" value="50" />
+      </div>
+    </section>
+
+    <section class="container">
+      <div class="grid-2">
+        <article class="card">
+          <h3>Abstract</h3>
+          <p>All-in-one image restoration aims to solve multiple degradations with a unified model. This page-style demo mimics TPGDiff’s presentation: structural priors guide shallow layers, semantic priors guide deep layers, and degradation priors influence the whole diffusion trajectory. This hierarchical prior fusion improves restoration quality under both standard and severe degradations.</p>
+        </article>
+        <article class="card">
+          <h3>Method Overview</h3>
+          <p>The framework extracts three priors from the same low-quality input: a semantic prior via distillation, a degradation-aware prior for diffusion-stage control, and a structural prior for detail preservation. These priors are injected into different network levels to achieve stable reconstruction.</p>
+          <div class="method-figure">
+            <img src="https://images.unsplash.com/photo-1516110833967-578b3b4e6a3f?auto=format&fit=crop&w=1500&q=80" alt="method overview illustration"/>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="container">
+      <h2 class="section-title">Quantitative Comparisons</h2>
+      <div class="title-bar"></div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Method</th>
+              <th>GoPro PSNR↑</th>
+              <th>Rain100L PSNR↑</th>
+              <th>SOTS PSNR↑</th>
+              <th>LPIPS↓</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Restormer</td>
+              <td>32.95</td>
+              <td>38.99</td>
+              <td>37.19</td>
+              <td>0.121</td>
+            </tr>
+            <tr>
+              <td>PromptIR</td>
+              <td>33.02</td>
+              <td class="runnerup">39.64</td>
+              <td>38.48</td>
+              <td>0.104</td>
+            </tr>
+            <tr>
+              <td>InstructIR</td>
+              <td class="runnerup">33.40</td>
+              <td>39.12</td>
+              <td class="runnerup">39.06</td>
+              <td class="runnerup">0.091</td>
+            </tr>
+            <tr>
+              <td>TPGDiff (Ours)</td>
+              <td class="highlight">33.87</td>
+              <td class="highlight">39.91</td>
+              <td class="highlight">39.52</td>
+              <td class="highlight">0.083</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="container">
+    Demo page inspired by TPGDiff project style · Built for your personal website
+  </footer>
+
+  <script>
+    const samples = [
+      {
+        name: "Deblur",
+        before: "https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=1600&q=45",
+        after: "https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=1600&q=90"
+      },
+      {
+        name: "Derain",
+        before: "https://images.unsplash.com/photo-1517586979036-b7d1e86b3345?auto=format&fit=crop&w=1600&q=45",
+        after: "https://images.unsplash.com/photo-1517586979036-b7d1e86b3345?auto=format&fit=crop&w=1600&q=90"
+      },
+      {
+        name: "Dehaze",
+        before: "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=1600&q=45",
+        after: "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=1600&q=90"
+      },
+      {
+        name: "Low-Light",
+        before: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1600&q=35",
+        after: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1600&q=88"
+      }
+    ];
+
+    const tabs = document.getElementById("tabs");
+    const beforeImage = document.getElementById("beforeImage");
+    const afterImage = document.getElementById("afterImage");
+    const beforeWrap = document.getElementById("beforeWrap");
+    const divider = document.getElementById("divider");
+    const knob = document.getElementById("knob");
+    const slider = document.getElementById("slider");
+
+    function setComparison(value) {
+      const percent = Math.max(0, Math.min(100, Number(value)));
+      beforeWrap.style.width = percent + "%";
+      divider.style.left = percent + "%";
+      knob.style.left = percent + "%";
+      slider.value = percent;
+    }
+
+    function setSample(index) {
+      const sample = samples[index];
+      beforeImage.src = sample.before;
+      afterImage.src = sample.after;
+      const allTabs = tabs.querySelectorAll(".tab");
+      allTabs.forEach((el, i) => el.classList.toggle("active", i === index));
+    }
+
+    samples.forEach((item, index) => {
+      const btn = document.createElement("button");
+      btn.className = "tab";
+      btn.type = "button";
+      btn.textContent = item.name;
+      btn.addEventListener("click", () => setSample(index));
+      tabs.appendChild(btn);
+    });
+
+    slider.addEventListener("input", e => setComparison(e.target.value));
+    setComparison(50);
+    setSample(0);
+  </script>
+</body>
+</html>
