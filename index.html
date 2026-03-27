@@ -177,6 +177,7 @@
       aspect-ratio: 16 / 9;
       overflow: hidden;
       user-select: none;
+      --position: 50%;
     }
 
     .comparison img {
@@ -191,8 +192,17 @@
     .before-wrap {
       position: absolute;
       inset: 0;
-      width: 50%;
+      width: 100%;
       overflow: hidden;
+      clip-path: inset(0 calc(100% - var(--position)) 0 0);
+    }
+
+    .before-wrap img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
     .divider {
@@ -488,19 +498,27 @@
     ];
 
     const tabs = document.getElementById("tabs");
+    const comparison = document.getElementById("comparison");
     const beforeImage = document.getElementById("beforeImage");
     const afterImage = document.getElementById("afterImage");
     const beforeWrap = document.getElementById("beforeWrap");
     const divider = document.getElementById("divider");
     const knob = document.getElementById("knob");
     const slider = document.getElementById("slider");
+    let dragging = false;
 
     function setComparison(value) {
       const percent = Math.max(0, Math.min(100, Number(value)));
-      beforeWrap.style.width = percent + "%";
+      comparison.style.setProperty("--position", percent + "%");
       divider.style.left = percent + "%";
       knob.style.left = percent + "%";
       slider.value = percent;
+    }
+
+    function setByPointer(clientX) {
+      const rect = comparison.getBoundingClientRect();
+      const percent = ((clientX - rect.left) / rect.width) * 100;
+      setComparison(percent);
     }
 
     function setSample(index) {
@@ -521,6 +539,25 @@
     });
 
     slider.addEventListener("input", e => setComparison(e.target.value));
+    comparison.addEventListener("pointerdown", e => {
+      dragging = true;
+      comparison.setPointerCapture(e.pointerId);
+      setByPointer(e.clientX);
+    });
+    comparison.addEventListener("pointermove", e => {
+      if (!dragging) {
+        return;
+      }
+      setByPointer(e.clientX);
+    });
+    comparison.addEventListener("pointerup", e => {
+      dragging = false;
+      comparison.releasePointerCapture(e.pointerId);
+    });
+    comparison.addEventListener("pointercancel", e => {
+      dragging = false;
+      comparison.releasePointerCapture(e.pointerId);
+    });
     setComparison(50);
     setSample(0);
   </script>
